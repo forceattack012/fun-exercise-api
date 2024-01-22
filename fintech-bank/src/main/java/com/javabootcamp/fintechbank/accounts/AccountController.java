@@ -68,5 +68,10 @@ public class AccountController {
     public AccountResponse createAccount(@RequestBody @Valid AccountRequest accountRequest){
         return accountService.createAccount(accountRequest);
     }
+
+    @RequestMapping(value = "/{accountNo}", method = RequestMethod.GET)
+    public AccountResponse getAccountByAccountNo(@PathVariable("accountNo") Integer accountNo){
+        return accountService.getAccountByAccountNo(accountNo);
+    }
 }
 
