@@ -57,7 +57,7 @@ public class AccountService {
 
         Account account = optionalAccount.get();
         if (account.getBalance() < transferRequest.amount()) {
-            // TODO handle bad request
+            throw new BadRequestException("account balance is not enough to transfer");
         }
 
         Account target = optionalTargetAccount.get();
