@@ -1,3 +1,16 @@
+# install Lombok in intelij
+![img.png](img.png)
+
+# change JDBC URl in H2 Console to jdbc:h2:mem:testdb
+![img_1.png](img_1.png)
+
+# change generate auto to identity 
+![img_2.png](img_2.png)
+
+# sql cmd
+SELECT * FROM accounts
+
+
 # Fun Exercise: Developing a Financial Technology Application
 This project involves building a financial technology application based on a **predefined API specification**.
 

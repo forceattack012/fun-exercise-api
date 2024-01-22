@@ -1,5 +1,6 @@
 package com.javabootcamp.fintechbank.accounts;
 
+import com.javabootcamp.fintechbank.exceptions.BadRequestException;
 import com.javabootcamp.fintechbank.exceptions.InternalServerException;
 import com.javabootcamp.fintechbank.exceptions.NotFoundException;
 import jakarta.transaction.Transactional;
@@ -43,24 +44,24 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountResponse transfer(Integer accountNo, Integer targetAccountNo, TransferRequest transferRequest){
+    public AccountResponse transfer(Integer accountNo, Integer targetAccountNo, TransferRequest transferRequest) {
         Optional<Account> optionalAccount = accountRepository.findById(accountNo);
-        if(optionalAccount.isEmpty()){
+        if (optionalAccount.isEmpty()) {
             throw new NotFoundException("Account not found");
         }
 
         Optional<Account> optionalTargetAccount = accountRepository.findById(targetAccountNo);
-        if(optionalTargetAccount.isEmpty()){
+        if (optionalTargetAccount.isEmpty()) {
             throw new NotFoundException("Target account not found");
         }
 
         Account account = optionalAccount.get();
-        if(account.getBalance() < transferRequest.amount()){
+        if (account.getBalance() < transferRequest.amount()) {
             // TODO handle bad request
         }
 
         Account target = optionalTargetAccount.get();
-        try{
+        try {
             double newAccountBalance = account.getBalance() - transferRequest.amount();
             account.setBalance(newAccountBalance);
 
@@ -69,10 +70,47 @@ public class AccountService {
 
             accountRepository.save(account);
             accountRepository.save(target);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             throw new InternalServerException("Failed to transfer");
         }
+        return new AccountResponse(account.getNo(), account.getType(), account.getName(), account.getBalance());
+    }
+
+    public AccountResponse withdrawAccount(Integer accountNo, WithdrawRequest withdrawRequest) {
+        Optional<Account> optionalAccount = accountRepository.findById(accountNo);
+        if (optionalAccount.isEmpty()) {
+            throw new NotFoundException("Account not found");
+        }
+
+        Account account = optionalAccount.get();
+        if (account.getBalance() < withdrawRequest.amount()) {
+            throw new BadRequestException("account balance is not enough to withdraw");
+        }
+
+        Double newBalance = account.getBalance() - withdrawRequest.amount();
+        account.setBalance(newBalance);
+
+        try {
+            accountRepository.save(account);
+        } catch (Exception ex) {
+            throw new InternalServerException("Failed to withdraw");
+        }
+
+        return new AccountResponse(
+                account.getNo(),
+                account.getType(),
+                account.getName(),
+                account.getBalance()
+        );
+    }
+
+    public AccountResponse createAccount(AccountRequest accountRequest){
+        Account account = new Account();
+        account.setName(accountRequest.name());
+        account.setBalance(accountRequest.balance());
+        account.setType(accountRequest.type());
+
+        account = accountRepository.save(account);
 
         return new AccountResponse(
                 account.getNo(),

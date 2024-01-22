@@ -55,8 +55,18 @@ public class AccountController {
             @PathVariable("accountNo") Integer accountNo,
             @PathVariable("targetAccountNo") Integer targetAccountNo,
             @RequestBody @Valid TransferRequest transferRequest
-    ){
+    ) {
         return accountService.transfer(accountNo, targetAccountNo, transferRequest);
+    }
+    @RequestMapping(value = "/{accountNo}/withdraw", method = RequestMethod.POST)
+    public AccountResponse withdraw(
+            @PathVariable("accountNo") Integer accountNo,
+            @RequestBody @Valid WithdrawRequest withdrawRequest) {
+        return accountService.withdrawAccount(accountNo, withdrawRequest);
+    }
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public AccountResponse createAccount(@RequestBody @Valid AccountRequest accountRequest){
+        return accountService.createAccount(accountRequest);
     }
 }
 
