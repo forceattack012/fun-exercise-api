@@ -1,5 +1,6 @@
 package com.javabootcamp.fintechbank.accounts;
 
+import com.javabootcamp.fintechbank.exceptions.BadRequestException;
 import com.javabootcamp.fintechbank.exceptions.InternalServerException;
 import com.javabootcamp.fintechbank.exceptions.NotFoundException;
 import jakarta.transaction.Transactional;
@@ -43,6 +44,28 @@ public class AccountService {
     }
 
     @Transactional
+    public AccountResponse withdrawAccount(Integer accountNo, WithdrawRequest withdrawRequest){
+        Optional<Account> optionalAccount = accountRepository.findById(accountNo);
+        if(optionalAccount.isEmpty()){
+            throw new NotFoundException("Account not found");
+        }
+
+        Account account = optionalAccount.get();
+        if(account.getBalance() < withdrawRequest.amount()){
+            throw new BadRequestException("account balance is not enough to withdraw");
+        }
+
+        Double newBalance = account.getBalance() - withdrawRequest.amount();
+        account.setBalance(newBalance);
+
+        try {
+            accountRepository.save(account);
+        }
+        catch (Exception ex){
+            throw new InternalServerException("Failed to withdraw");
+        }
+
+        return new AccountResponse(account.getNo(), account.getType(), account.getName(), account.getBalance());
     public AccountResponse createAccount(AccountRequest accountRequest){
         Account account = new Account();
         account.setName(accountRequest.name());
