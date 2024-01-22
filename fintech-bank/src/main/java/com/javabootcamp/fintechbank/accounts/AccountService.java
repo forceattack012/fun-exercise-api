@@ -103,7 +103,6 @@ public class AccountService {
                 account.getBalance()
         );
     }
-
     public AccountResponse createAccount(AccountRequest accountRequest){
         Account account = new Account();
         account.setName(accountRequest.name());
@@ -118,5 +117,11 @@ public class AccountService {
                 account.getName(),
                 account.getBalance()
         );
+    }
+
+    public AccountResponse getAccountByAccountNo(Integer accountNo){
+        return accountRepository.findById(accountNo)
+                .map(account -> new AccountResponse(account.getNo(), account.getType(), account.getName(), account.getBalance()))
+                .orElseThrow(() -> new NotFoundException("Account not found"));
     }
 }
