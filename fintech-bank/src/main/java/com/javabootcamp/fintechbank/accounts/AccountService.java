@@ -2,6 +2,7 @@ package com.javabootcamp.fintechbank.accounts;
 
 import com.javabootcamp.fintechbank.exceptions.InternalServerException;
 import com.javabootcamp.fintechbank.exceptions.NotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,5 +40,22 @@ public class AccountService {
             throw new InternalServerException("Failed to deposit");
         }
         return new AccountResponse(account.getNo(), account.getType(), account.getName(), account.getBalance());
+    }
+
+    @Transactional
+    public AccountResponse createAccount(AccountRequest accountRequest){
+        Account account = new Account();
+        account.setName(accountRequest.name());
+        account.setBalance(accountRequest.balance());
+        account.setType(accountRequest.type());
+
+        account = accountRepository.save(account);
+
+        return new AccountResponse(
+                account.getNo(),
+                account.getType(),
+                account.getName(),
+                account.getBalance()
+        );
     }
 }
