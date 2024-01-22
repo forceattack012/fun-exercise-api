@@ -44,6 +44,38 @@ public class AccountService {
     }
 
     @Transactional
+    public AccountResponse transfer(Integer accountNo, Integer targetAccountNo, TransferRequest transferRequest) {
+        Optional<Account> optionalAccount = accountRepository.findById(accountNo);
+        if (optionalAccount.isEmpty()) {
+            throw new NotFoundException("Account not found");
+        }
+
+        Optional<Account> optionalTargetAccount = accountRepository.findById(targetAccountNo);
+        if (optionalTargetAccount.isEmpty()) {
+            throw new NotFoundException("Target account not found");
+        }
+
+        Account account = optionalAccount.get();
+        if (account.getBalance() < transferRequest.amount()) {
+            throw new BadRequestException("account balance is not enough to transfer");
+        }
+
+        Account target = optionalTargetAccount.get();
+        try {
+            double newAccountBalance = account.getBalance() - transferRequest.amount();
+            account.setBalance(newAccountBalance);
+
+            double newTargetBalance = target.getBalance() + transferRequest.amount();
+            target.setBalance(newTargetBalance);
+
+            accountRepository.save(account);
+            accountRepository.save(target);
+        } catch (Exception ex) {
+            throw new InternalServerException("Failed to transfer");
+        }
+        return new AccountResponse(account.getNo(), account.getType(), account.getName(), account.getBalance());
+    }
+
     public AccountResponse withdrawAccount(Integer accountNo, WithdrawRequest withdrawRequest) {
         Optional<Account> optionalAccount = accountRepository.findById(accountNo);
         if (optionalAccount.isEmpty()) {
@@ -64,8 +96,14 @@ public class AccountService {
             throw new InternalServerException("Failed to withdraw");
         }
 
-        return new AccountResponse(account.getNo(), account.getType(), account.getName(), account.getBalance());
+        return new AccountResponse(
+                account.getNo(),
+                account.getType(),
+                account.getName(),
+                account.getBalance()
+        );
     }
+
     public AccountResponse createAccount(AccountRequest accountRequest){
         Account account = new Account();
         account.setName(accountRequest.name());
