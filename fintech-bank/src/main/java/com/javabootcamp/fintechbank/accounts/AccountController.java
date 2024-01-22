@@ -56,6 +56,9 @@ public class AccountController {
             @RequestBody @Valid WithdrawRequest withdrawRequest)
     {
         return accountService.withdrawAccount(accountNo, withdrawRequest);
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public AccountResponse createAccount(@RequestBody @Valid AccountRequest accountRequest){
+        return accountService.createAccount(accountRequest);
     }
 }
 

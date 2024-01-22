@@ -66,5 +66,19 @@ public class AccountService {
         }
 
         return new AccountResponse(account.getNo(), account.getType(), account.getName(), account.getBalance());
+    public AccountResponse createAccount(AccountRequest accountRequest){
+        Account account = new Account();
+        account.setName(accountRequest.name());
+        account.setBalance(accountRequest.balance());
+        account.setType(accountRequest.type());
+
+        account = accountRepository.save(account);
+
+        return new AccountResponse(
+                account.getNo(),
+                account.getType(),
+                account.getName(),
+                account.getBalance()
+        );
     }
 }
