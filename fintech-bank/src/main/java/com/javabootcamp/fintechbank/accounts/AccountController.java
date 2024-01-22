@@ -49,5 +49,14 @@ public class AccountController {
     ) {
         return accountService.depositAccount(accountNo, depositRequest);
     }
+
+    @RequestMapping(value = "{accountNo}/transfer/{targetAccountNo}", method = RequestMethod.POST)
+    public AccountResponse transferAccount(
+            @PathVariable("accountNo") Integer accountNo,
+            @PathVariable("targetAccountNo") Integer targetAccountNo,
+            @RequestBody @Valid TransferRequest transferRequest
+    ){
+        return accountService.transfer(accountNo, targetAccountNo, transferRequest);
+    }
 }
 
