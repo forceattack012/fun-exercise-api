@@ -107,7 +107,7 @@ jobs:
         run: |
           git --version
           git config user.name "forceattack012"
-          git config user.email "wisarutkim012@gmail.com"
+          git config user.email "root@forceattack012.link"
           sed -i -E "s/ghcr.io\/forceattack012\/fun-exercise-api.*$/ghcr.io\/forceattack012\/fun-exercise-api:${GITHUB_SHA}/" kube-gitops/deployment.yml
           git add kube-gitops/deployment.yml
           git commit -m "🤖 change docker image version to ${GITHUB_SHA}"
