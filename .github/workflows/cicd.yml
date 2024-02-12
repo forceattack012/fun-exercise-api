@@ -41,7 +41,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./fun-exercise-api/fintech-bank/gradlew build sonar --info
+        run: ../fun-exercise-api/fintech-bank/gradlew build sonar --info
 
   build-and-push-docker-image:
     name: Build Docker image and push to repositories
