@@ -41,7 +41,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ../../fun-exercise-api/fintech-bank/gradlew build sonar --info
+        run: ./gradlew build sonar --info
 
   build-and-push-docker-image:
     name: Build Docker image and push to repositories
@@ -57,16 +57,16 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Unit test outside Docker-compose
-        run: ./fun-exercise-api/fintech-bank/gradlew test
+        run: ./gradlew test
 
       - name: Setup SHA
         run: echo "GITHUB_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
 
-#      - name: Integration test inside Docker-compose cleanup
-#        run: docker-compose -f docker-compose.test.yml down
-#
-#      - name: Integration test inside Docker-compose
-#        run: docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from it_test
+      - name: Integration test inside Docker-compose cleanup
+        run: docker-compose -f docker-compose.test.yml down
+
+      - name: Integration test inside Docker-compose
+        run: docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from it_test
 
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag ghcr.io/aorjoa/devops-java-example:${{ env.GITHUB_SHA }}
@@ -84,7 +84,7 @@ jobs:
         with:
           context: .
           tags: |
-            ghcr.io/forceattack012/fun-exercise-api:${{ env.GITHUB_SHA }}
+            ghcr.io/aorjoa/devops-java-example:${{ env.GITHUB_SHA }}
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
 
@@ -106,8 +106,8 @@ jobs:
       - name: change image tag
         run: |
           git --version
-          git config user.name "forceattack012"
-          git config user.email "wisarutkim012@gmail.com"
+          git config user.name "aorjoa"
+          git config user.email "root@aorjoa.link"
           sed -i -E "s/ghcr.io\/aorjoa\/devops-java-example.*$/ghcr.io\/aorjoa\/devops-java-example:${GITHUB_SHA}/" kube-gitops/deployment.yml
           git add kube-gitops/deployment.yml
           git commit -m "🤖 change docker image version to ${GITHUB_SHA}"
