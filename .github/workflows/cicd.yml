@@ -41,7 +41,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./fintech-bank/gradlew build sonar --info
+        run: ./fun-exercise-api/fintech-bank/gradlew build sonar --info
 
   build-and-push-docker-image:
     name: Build Docker image and push to repositories
@@ -57,7 +57,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Unit test outside Docker-compose
-        run: ./fintech-bank/gradlew test
+        run: ./fun-exercise-api/fintech-bank/gradlew test
 
       - name: Setup SHA
         run: echo "GITHUB_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
