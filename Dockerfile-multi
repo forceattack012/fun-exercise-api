@@ -1,7 +1,7 @@
 # stage-1 build artifact
 FROM amazoncorretto:17-alpine3.19 as builder
 WORKDIR /app
-ADD . .
+ADD fintech-bank .
 RUN ["./gradlew","bootJar"]
 
 # stage-2 running image
