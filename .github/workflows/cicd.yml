@@ -115,5 +115,5 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.PAT }}
-          repository: aorjoa/devops-argocd
+          repository: forceattack012/devops-argocd-fintech
           branch: main
