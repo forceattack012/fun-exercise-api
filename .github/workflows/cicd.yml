@@ -100,7 +100,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
         with:
-          repository: aorjoa/devops-argocd
+          repository: forceattack012/devops-argocd-fintech
           persist-credentials: false
           fetch-depth: 0
       - name: change image tag
@@ -108,7 +108,7 @@ jobs:
           git --version
           git config user.name "forceattack012"
           git config user.email "wisarutkim012@gmail.com"
-          sed -i -E "s/ghcr.io\/aorjoa\/devops-java-example.*$/ghcr.io\/aorjoa\/devops-java-example:${GITHUB_SHA}/" kube-gitops/deployment.yml
+          sed -i -E "s/ghcr.io\/forceattack012\/fun-exercise-api.*$/ghcr.io\/forceattack012\/fun-exercise-api:${GITHUB_SHA}/" kube-gitops/deployment.yml
           git add kube-gitops/deployment.yml
           git commit -m "🤖 change docker image version to ${GITHUB_SHA}"
       - name: push changes
